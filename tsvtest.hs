@@ -12,25 +12,28 @@ commaRegex :: Regex
 commaRegex = mkRegex ","
 
 
-lineToList :: String -> [String]
-lineToList input = splitRegex tabRegex input
+lineToList :: String -> Regex -> [String]
+lineToList input regex = splitRegex regex input
 
-findUnusedGrids :: String -> String -> [String]
-findUnusedGrids grids used = u \\ s
-        where u = lineToList grids
-              s = lineToList used
+findSetTheoreticDifference :: [String] -> [String] -> [String]
+findSetTheoreticDifference a b = a \\ b
 
+process :: [String] -> IO()
+process ["tsv",file1,file2] = do
+                                aContent <- readFile file1
+                                bContent <- readFile file2
+                                let difference = findSetTheoreticDifference (lineToList aContent tabRegex) (lineToList bContent tabRegex)
+                                mapM_ putStrLn difference
 
-process :: [String] -> String
-process ["tsv",file1,file2] = "tsv" ++ file1 ++ file2
-process ["csv",file1,file2] = "csv "++ file1 ++ file2
-process _ = "Use command like: [tsv/csv] file1 file2"
+process ["csv",file1,file2] = do
+                                aContent <- readFile file1
+                                bContent <- readFile file2
+                                let difference = findSetTheoreticDifference (lineToList aContent commaRegex) (lineToList bContent commaRegex)
+                                mapM_ putStrLn difference
+
+process _ = putStrLn "Use command like: [tsv/csv] file1 file2"
 
 
 main = do
         delim <- getArgs
-        putStrLn (process delim)
-        accessed <- readFile "accessed_grids.txt"
-        grids <- readFile "all_grids.txt"
-        let unused = findUnusedGrids grids accessed
-        mapM_ putStrLn unused
+        process delim
