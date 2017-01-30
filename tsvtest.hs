@@ -19,17 +19,19 @@ findSetTheoreticDifference :: [String] -> [String] -> [String]
 findSetTheoreticDifference a b = a \\ b
 
 process :: [String] -> IO()
-process ["tsv",file1,file2] = do
+process ["tsv",file1,file2,outputFile] = do
                                 aContent <- readFile file1
                                 bContent <- readFile file2
                                 let difference = findSetTheoreticDifference (lineToList aContent tabRegex) (lineToList bContent tabRegex)
-                                mapM_ putStrLn difference
+                                mapM_ (\x -> appendFile outputFile (x++"\n")) difference
+                                putStrLn "Done!"
 
-process ["csv",file1,file2] = do
+process ["csv",file1,file2, outputFile] = do
                                 aContent <- readFile file1
                                 bContent <- readFile file2
                                 let difference = findSetTheoreticDifference (lineToList aContent commaRegex) (lineToList bContent commaRegex)
-                                mapM_ putStrLn difference
+                                mapM_ (\x -> appendFile outputFile (x++"\n")) difference
+                                putStrLn "Done!"
 
 process _ = putStrLn "Use command like: [tsv/csv] file1 file2"
 
