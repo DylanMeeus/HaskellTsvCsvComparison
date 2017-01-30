@@ -2,8 +2,8 @@ import Data.List
 import System.IO
 import System.Environment
 import Text.Regex
--- read out a tsv file
--- store the result in a list of strings
+
+-- Reads a combination of TSV, or CSV files, and pushes the output in the chosen file.
 
 tabRegex :: Regex
 tabRegex = mkRegex "\t"
@@ -31,10 +31,9 @@ process ["csv",file1,file2, outputFile] = do
                                 bContent <- readFile file2
                                 let difference = findSetTheoreticDifference (lineToList aContent commaRegex) (lineToList bContent commaRegex)
                                 mapM_ (\x -> appendFile outputFile (x++"\n")) difference
-                                putStrLn "Done: set A: " ++ length (lineToList aContent commaRegex) ++ "Lines"
+                                putStrLn "Done!"
 
 process _ = putStrLn "Use command like: [tsv/csv] file1 file2"
-
 
 main = do
         delim <- getArgs
