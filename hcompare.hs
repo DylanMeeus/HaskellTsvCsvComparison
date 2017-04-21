@@ -30,11 +30,12 @@ process ["csv",file1,file2, outputFile] = do
                                 aContent <- readFile file1
                                 bContent <- readFile file2
                                 let difference = findSetTheoreticDifference (lineToList aContent commaRegex) (lineToList bContent commaRegex)
+                                putStrLn (show $ length difference)
                                 mapM_ (\x -> appendFile outputFile (x++"\n")) difference
                                 putStrLn "Done!"
 
-process _ = putStrLn "Use command like: [tsv/csv] file1 file2"
+process _ = putStrLn "Use command like: [tsv/csv] input1 input2 result"
 
-main = do
+main =  do
         delim <- getArgs
         process delim
