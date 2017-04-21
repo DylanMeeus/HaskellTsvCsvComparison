@@ -1,6 +1,6 @@
 import sys
 
-""" Python file to verify the result given my haskell. """
+""" Python file to verify the result given by hcompare.hs """
 
 
 def compare_result(result, file):
